@@ -1,1 +1,2 @@
-simp
+
+            (*Q).last = new;

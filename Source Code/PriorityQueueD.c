@@ -1,4 +1,4 @@
-/* Queue Dynamic */
+/* Priority Queue Dynamic */
 
 #include <stdio.h>
 #include <malloc.h>
@@ -27,8 +27,7 @@ typedef struct
 void createEmpty(queue *Q);
 int isEmpty(queue Q);
 int countElement(queue Q);
-void add(char nim[], char name[], float nilai, queue *Q);
-void addPriority(char nim[], char name[], float nilai, int priority, queue *Q);
+void add(char nim[], char name[], float nilai, int priority, queue *Q);
 void del(queue *Q);
 void printQueue(queue Q);
 
@@ -37,9 +36,10 @@ int main(){
     createEmpty(&Q);
     printQueue(Q);
     printf("===============\n");
-    add("13507701", "Nana", 64.75, &Q);
-    add("13507702", "Rudi", 75.11, &Q);
-    add("13507703", "Dea", 84.63, &Q);
+    add("13507701", "Nana", 64.75, 3, &Q);
+    add("13507702", "Rudi", 75.11, 4, &Q);
+    add("13507703", "Dea", 84.63, 1, &Q);
+    add("13507704", "Deadddd", 93.133, 2, &Q);
     printQueue(Q);
     printf("===============\n");
     del(&Q);
@@ -78,25 +78,7 @@ int countElement(queue Q){
     return result;
 }
 
-void add(char nim[], char name[], float nilai, queue *Q){
-    element* new = (element *) malloc (sizeof (element));
-    strcpy(new->container.nim, nim);
-    strcpy(new->container.name, name);
-    new->container.nilai = nilai;
-
-    new->next = NULL;
-    if ((*Q).first == NULL)
-    {   // jika queue kosong
-        (*Q).first = new;
-    }else
-    {
-        (*Q).last->next = new;
-    }
-    (*Q).last = new;
-    new = NULL;
-}
-
-void addPriority(char nim[], char name[], float nilai, int priority, queue *Q){
+void add(char nim[], char name[], float nilai, int priority, queue *Q){
     element* new = (element *) malloc (sizeof (element));
     strcpy(new->container.nim, nim);
     strcpy(new->container.name, name);

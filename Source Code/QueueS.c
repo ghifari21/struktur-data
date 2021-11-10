@@ -21,6 +21,7 @@ void createEmpty(queue *Q);
 int isEmpty(queue Q);
 int isFull(queue Q);
 void add(char nim[], char name[], float nilai, queue *Q);
+void addPriority(char nim[], char name[], float nilai, int priority, queue *Q);
 void del(queue *Q);
 void printQueue(queue Q);
 
@@ -83,6 +84,46 @@ void add(char nim[], char name[], float nilai, queue *Q){
             (*Q).data[(*Q).last].nilai = nilai;
         }else
         {   // jika queue penuh
+            printf("queue penuh\n");
+        }
+    }
+}
+
+void addPriority(char nim[], char name[], float nilai, int priority, queue *Q){
+    if (isEmpty(*Q) == 1)
+    {
+        (*Q).first = 0;
+        (*Q).last = 0;
+        strcpy((*Q).data[0].nim, nim);
+        strcpy((*Q).data[0].name, name);
+        (*Q).data[0].nilai = nilai;
+    }else
+    {
+        if (isFull(*Q) != 1)
+        {
+            if (priority > (*Q).last)
+            {
+                (*Q).last++;
+                strcpy((*Q).data[(*Q).last].nim, nim);
+                strcpy((*Q).data[(*Q).last].name, name);
+                (*Q).data[(*Q).last].nilai = nilai;
+            }else
+            {
+                for (int i = (*Q).last - 1; i >= priority; i--)
+                {
+                    strcpy((*Q).data[i+1].nim, (*Q).data[i].nim);
+                    strcpy((*Q).data[i+1].name, (*Q).data[i].name);
+                    (*Q).data[i+1].nilai = (*Q).data[i].nilai;
+                    if (i == priority)
+                    {
+                        strcpy((*Q).data[i].nim, nim);
+                        strcpy((*Q).data[i].name, name);
+                        (*Q).data[i].nilai = nilai;
+                    }
+                }
+            }
+        }else
+        {
             printf("queue penuh\n");
         }
     }

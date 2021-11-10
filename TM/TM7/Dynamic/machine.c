@@ -1,54 +1,13 @@
-/* Queue Dynamic */
+/*
+   ============================================================
+   | Saya Ghifari Octaverin 2000952 mengerjakan TM7           |
+   | dalam mata kuliah Struktur Data                          |
+   | untuk keberkahanNya maka saya tidak melakukan kecurangan |
+   | seperti yang telah dispesifikasikan. Aamiin              |
+   ============================================================
+*/
 
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
-
-typedef struct
-{
-    char nim[10];
-    char name[50];
-    float nilai;
-}nilaiMatkul;
-
-typedef struct elmt *elmtAddress;
-typedef struct elmt
-{
-    nilaiMatkul container;
-    elmtAddress next;
-}element;
-
-typedef struct
-{
-    element *first;
-    element *last;
-}queue;
-
-void createEmpty(queue *Q);
-int isEmpty(queue Q);
-int countElement(queue Q);
-void add(char nim[], char name[], float nilai, queue *Q);
-void addPriority(char nim[], char name[], float nilai, int priority, queue *Q);
-void del(queue *Q);
-void printQueue(queue Q);
-
-int main(){
-    queue Q;
-    createEmpty(&Q);
-    printQueue(Q);
-    printf("===============\n");
-    add("13507701", "Nana", 64.75, &Q);
-    add("13507702", "Rudi", 75.11, &Q);
-    add("13507703", "Dea", 84.63, &Q);
-    printQueue(Q);
-    printf("===============\n");
-    del(&Q);
-    del(&Q);
-    printQueue(Q);
-    printf("===============\n");
-
-    return 0;
-}
+#include "header.h"
 
 void createEmpty(queue *Q){
     (*Q).first = NULL;
@@ -58,7 +17,7 @@ void createEmpty(queue *Q){
 int isEmpty(queue Q){
     int result = 0;
     if (Q.first == NULL)
-    {
+    {   // jika first null / queue kosong
         result = 1;
     }
     return result;
@@ -78,49 +37,47 @@ int countElement(queue Q){
     return result;
 }
 
-void add(char nim[], char name[], float nilai, queue *Q){
+void add(char name[], char rating[], queue *Q){
     element* new = (element *) malloc (sizeof (element));
-    strcpy(new->container.nim, nim);
     strcpy(new->container.name, name);
-    new->container.nilai = nilai;
+    strcpy(new->container.rating, rating);
 
     new->next = NULL;
     if ((*Q).first == NULL)
     {   // jika queue kosong
         (*Q).first = new;
     }else
-    {
+    {   // jika queue tidak kosong
         (*Q).last->next = new;
     }
     (*Q).last = new;
     new = NULL;
 }
 
-void addPriority(char nim[], char name[], float nilai, int priority, queue *Q){
+void addPriority(char name[], char rating[], int priority, queue *Q){
     element* new = (element *) malloc (sizeof (element));
-    strcpy(new->container.nim, nim);
     strcpy(new->container.name, name);
-    new->container.nilai = nilai;
+    strcpy(new->container.rating, rating);
     new->next = NULL;
 
     if (isEmpty(*Q) == 1)
-    {
+    {   // jika queue kosong
         (*Q).first = new;
         (*Q).last = new;
     }else
-    {
+    {   // jika queue tidak kosong
         if (priority == 1)
-        {
+        {   // jika prioritas 1
             new->next = (*Q).first;
             (*Q).first = new;
         }
         else if (priority > countElement(*Q))
-        {
+        {   // jika nilai prioritasnya lebih besar daripada element terakhir
             (*Q).last->next = new;
             (*Q).last = new;
         }
         else
-        {
+        {   // jika memasukan element prioritas ditengah queue
             element *ptr = (*Q).first;
             for (int i = 1; i < priority-1; i++)
             {
@@ -138,11 +95,11 @@ void del(queue *Q){
     {   // jika queue tidak kosong
         element *delete = (*Q).first;
         if (countElement(*Q) == 1)
-        {
+        {   // jika banyak element hanya 1
             (*Q).first = NULL;
             (*Q).last = NULL;
         }else
-        {
+        {   // jika banyak element lebih dari 1
             (*Q).first = (*Q).first->next;
             delete->next = NULL;
         }
@@ -150,23 +107,22 @@ void del(queue *Q){
     }
 }
 
+void move(queue *Q1, queue *Q2){
+    /* masukan element pertama dari queue 1 ke queue 2 */
+    element *ptr = (*Q1).first;
+    add(ptr->container.name, ptr->container.rating, Q2);
+    del(Q1);
+}
+
 void printQueue(queue Q){
     if (Q.first != NULL)
     {   // jika queue tidak kosong
-        printf("---isi queue---\n");
         element* ptr = Q.first;
-        int i = 1;
         while (ptr != NULL)
         {
-            printf("===============\n");
-            printf("element ke: %d\n", i);
-            printf("nim: %s\n", ptr->container.nim);
-            printf("nama: %s\n", ptr->container.name);
-            printf("nilai: %f\n", ptr->container.nilai);
+            printf("%s %s\n", ptr->container.name, ptr->container.rating);
             ptr = ptr->next;
-            i++;
         }
-        printf("---------------\n");
     }else
     {   // jika queue kosong
         printf("queue kosong\n");
