@@ -101,26 +101,28 @@ void addPriority(char nim[], char name[], float nilai, int priority, queue *Q){
     {
         if (isFull(*Q) != 1)
         {
-            if (priority > (*Q).last)
-            {
+            if (priority - 1 > (*Q).last)
+            {   // jika prioritas new lebih besar daripada element terakhir
                 (*Q).last++;
                 strcpy((*Q).data[(*Q).last].nim, nim);
                 strcpy((*Q).data[(*Q).last].name, name);
                 (*Q).data[(*Q).last].nilai = nilai;
+                
             }else
-            {
-                for (int i = (*Q).last - 1; i >= priority; i--)
+            {   // jika ingin memasukan element new di depan atau ditengah queue
+                /* cara kerjanya menggeser element sebelum prioritas kemudian
+                    masukan element prioritas di tempat yang sudah dibikin */
+                int i;
+                for (i = (*Q).last; i >= priority - 1; i--) // looping untuk memundurkan queue
                 {
-                    strcpy((*Q).data[i+1].nim, (*Q).data[i].nim);
-                    strcpy((*Q).data[i+1].name, (*Q).data[i].name);
-                    (*Q).data[i+1].nilai = (*Q).data[i].nilai;
-                    if (i == priority)
-                    {
-                        strcpy((*Q).data[i].nim, nim);
-                        strcpy((*Q).data[i].name, name);
-                        (*Q).data[i].nilai = nilai;
-                    }
+                strcpy((*Q).data[i+1].nim, (*Q).data[i].nim);
+                strcpy((*Q).data[i+1].name, (*Q).data[i].name);
+                (*Q).data[i+1].nilai = (*Q).data[i].nilai;
                 }
+                (*Q).last++;
+                strcpy((*Q).data[priority - 1].nim, nim);
+                strcpy((*Q).data[priority - 1].name, name);
+                (*Q).data[priority - 1].nilai = nilai;
             }
         }else
         {
