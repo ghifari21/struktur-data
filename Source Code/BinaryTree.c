@@ -165,6 +165,9 @@ void copyTree(simpul *root1, simpul **root2){
     {
         (*root2) = (simpul *) malloc (sizeof (simpul));
         (*root2)->container = root1->container;
+        (*root2)->left = NULL;
+        (*root2)->right = NULL;
+
         if (root1->left != NULL)
         {
             copyTree(root1->left, &(*root2)->left);
@@ -185,8 +188,11 @@ int isEqual(simpul *root1, simpul *root2){
             result = 0;
         }else
         {
-            isEqual(root1->left, root2->left);
-            isEqual(root1->right, root2->right);
+            result = isEqual(root1->left, root2->left);
+            if (result != 0)
+            {
+                result = isEqual(root1->right, root2->right);
+            }
         }
     }else
     {
