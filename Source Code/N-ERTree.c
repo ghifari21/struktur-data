@@ -62,35 +62,90 @@ int main(){
         addChild('M', node);
     }
     
-    printf("===============\n");
-    printf("preOrder\n");
-    printTreePreOrder(T.root);
-    printf("\n===============\n");
-    printf("postOrder\n");
-    printTreePostOrder(T.root);
-    printf("\n===============\n");
+    // printf("===============\n");
+    // printf("preOrder\n");
+    // printTreePreOrder(T.root);
+    // printf("\n===============\n");
+    // printf("postOrder\n");
+    // printTreePostOrder(T.root);
+    // printf("\n===============\n");
 
-    tree T2;
-    copyTree(T.root, &T2.root);
-    if (isEqual(T.root, T2.root) == 1)
-    {
-        printf("pohon sama\n");
-    }else
-    {
-        printf("pohon tidak sama\n");
-    }
+    // tree T2;
+    // // copyTree(T.root, &T2.root);
+    // makeTree('A', &T2);
+    // addChild('B', T2.root);
+    // addChild('C', T2.root);
+    // addChild('D', T2.root);
+
+    // node = findsimpul('B', T2.root);
+    // if (node != NULL)
+    // {
+    //     addChild('E', node);
+    //     addChild('F', node);
+    // }
     
+    // node = findsimpul('C', T2.root);
+    // if (node != NULL)
+    // {
+    //     addChild('G', node);
+    // }
+    
+    // node = findsimpul('D', T2.root);
+    // if (node != NULL)
+    // {
+    //     addChild('H', node);
+    //     addChild('I', node);
+    //     addChild('J', node);
+    // }
+    
+    // node = findsimpul('J', T2.root);
+    // if (node != NULL)
+    // {
+    //     addChild('K', node);
+    //     addChild('L', node);
+    //     addChild('M', node);
+    //     addChild('Z', node);
+    // }
+    // printf("===============\n");
+    // printf("preOrder\n");
+    // printTreePreOrder(T2.root);
+    // printf("\n===============\n");
+    // printf("postOrder\n");
+    // printTreePostOrder(T2.root);
+    // printf("\n===============\n");
+    // if (isEqual(T.root, T2.root) == 1)
+    // {
+    //     printf("pohon sama\n");
+    // }else
+    // {
+    //     printf("pohon tidak sama\n");
+    // }
+    
+    // node = findsimpul('J', T.root);
+    // if (node != NULL)
+    // {
+    //     delChild('K', node);
+    //     delChild('L', node);
+    //     delChild('M', node);
+    // }
+
     node = findsimpul('J', T.root);
     if (node != NULL)
     {
-        delChild('K', node);
-        delChild('L', node);
+        // addChild('K', node);
+        // addChild('L', node);
         delChild('M', node);
     }
+
     printf("===============\n");
     printf("preOrder setelah dihapus\n");
     printTreePreOrder(T.root);
     printf("\n===============\n");
+    printf("postOrder setelah dihapus\n");
+    printTreePostOrder(T.root);
+    printf("\n===============\n");
+    node = findsimpul('L', T.root);
+    printf("%c\n", node->sibling->container);
 
     return 0;
 }
@@ -166,7 +221,7 @@ void delAll(simpul *root){
                     delAll(process);
                 }
             }
-            free(root);       
+            free(root);
         }else
         {
             free(root);
@@ -240,20 +295,20 @@ void delChild(char c, simpul *root){
                             anak dan yang dihapus adalah simpul
                             anak kedua */
                             root->child->sibling = NULL;
+                        }else
+                        {   /* jika yang dihapus bukan
+                            simpul anak pertama dan simpul root
+                            memiliki simpul anak lebih dari dua simpul*/
+                            prev->sibling = delete->sibling;
+                            delete->sibling = NULL;
                         }
                     }
+                    delAll(delete);
                 }else
-                {   /* jika yang dihapus bukan
-                    simpul anak pertama dan simpul root
-                    memiliki simpul anak lebih dari dua simpul*/
-                    prev->sibling = delete->sibling;
-                    delete->sibling = NULL;
+                {
+                    printf("tidak ada simpul anak dengan kontainer karakter masukan\n");
                 }
             }
-            delAll(delete);
-        }else
-        {
-            printf("tidak ada simpul anak dengan kontainer karakter masukan\n");
         }
     }
 }
@@ -291,12 +346,16 @@ simpul* findsimpul(char c, simpul *root){
                         }else
                         {
                             result = findsimpul(c, ptr);
+                            if (result != NULL)
+                            {
+                                found = 1;
+                            }
                             ptr = ptr->sibling;
                         }
                     }
                     /* memproses simpul anak terakhir
                     karena belum terproses dalam perulangan */
-                    if (found == 1)
+                    if (found == 0)
                     {
                         if (ptr->container == c)
                         {
@@ -320,7 +379,7 @@ void printTreePreOrder(simpul *root){
         simpul *ptr = root->child;
         if (ptr != NULL)
         {
-            if (ptr->sibling != NULL)
+            if (ptr->sibling == NULL)
             {   // jika memiliki satu simpul anak
                 printTreePreOrder(ptr);
             }else
@@ -351,7 +410,7 @@ void printTreePostOrder(simpul *root){
             }else
             {   // jika memiliki banyak simpul anak
                 // mencetak simpul anak
-                while (ptr->sibling != root->child);
+                while (ptr->sibling != root->child)
                 {
                     printTreePostOrder(ptr);
                     ptr = ptr->sibling;
@@ -370,8 +429,20 @@ void copyTree(simpul *root1, simpul **root2){
     {
         (*root2) = (simpul *) malloc (sizeof (simpul));
         (*root2)->container = root1->container;
-        (*root2)->sibling = NULL;
-        (*root2)->child = NULL;
+        if (root1->sibling != NULL)
+        {
+            (*root2)->sibling = root1->sibling;
+        }else
+        {
+            (*root2)->sibling = NULL;
+        }
+        if (root1->child != NULL)
+        {
+            (*root2)->child = root1->child;
+        }else
+        {
+            (*root2)->child = NULL;
+        }
 
         if (root1->child != NULL)
         {
@@ -414,11 +485,15 @@ int isEqual(simpul *root1, simpul *root2){
                 {   // jika memiliki banyak simpul anak
                     simpul *ptr1 = root1->child;
                     simpul *ptr2 = root2->child;
-                    while (ptr1->sibling != root1->child)
+                    while (ptr1->sibling != root1->child || ptr2->sibling != root2->child)
                     {
                         if (ptr1 != NULL && ptr2 != NULL)
                         {
                             result = isEqual(ptr1, ptr2);
+                            if (result == 0)
+                            {
+                                break;
+                            }
                             ptr1 = ptr1->sibling;
                             ptr2 = ptr2->sibling;
                         }else
@@ -428,14 +503,20 @@ int isEqual(simpul *root1, simpul *root2){
                         }
                     }
                     /* memproses simpul anak terakhir
-                    karena belum terproses dalam perngulangan */
-                    result = isEqual(ptr1, ptr2);
+                    karena belum terproses dalam pengulangan */
+                    if (result != 0)
+                    {
+                        result = isEqual(ptr1, ptr2);
+                    }
                 }
+            }else
+            {
+                result = isEqual(root1->child, root2->child);
             }
         }
     }else
     {
-        if (root1 != NULL && root2 != NULL)
+        if (root1 != NULL || root2 != NULL)
         {
             result = 0;
         }
