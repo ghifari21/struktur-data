@@ -129,14 +129,15 @@ int main(){
     //     delChild('M', node);
     // }
 
-    node = findsimpul('J', T.root);
-    if (node != NULL)
-    {
-        // addChild('K', node);
-        // addChild('L', node);
-        delChild('M', node);
-    }
+    // node = findsimpul('J', T.root);
+    // if (node != NULL)
+    // {
+    //     // addChild('K', node);
+    //     // addChild('L', node);
+    //     delChild('M', node);
+    // }
 
+    delAll(T.root);
     printf("===============\n");
     printf("preOrder setelah dihapus\n");
     printTreePreOrder(T.root);
@@ -144,8 +145,8 @@ int main(){
     printf("postOrder setelah dihapus\n");
     printTreePostOrder(T.root);
     printf("\n===============\n");
-    node = findsimpul('L', T.root);
-    printf("%c\n", node->sibling->container);
+    // node = findsimpul('L', T.root);
+    // printf("%c\n", node->sibling->container);
 
     return 0;
 }
@@ -220,6 +221,7 @@ void delAll(simpul *root){
                     ptr = ptr->sibling;
                     delAll(process);
                 }
+                delAll(ptr);
             }
             free(root);
         }else
