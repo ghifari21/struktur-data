@@ -37,7 +37,7 @@ int main(){
     }
 
     // memasukan data rating ke dalam array sementara
-    float temp[count];
+    float temp[100];
     for ( i = 0; i < count; i++)
     {
         temp[i] = data[i].rating;
