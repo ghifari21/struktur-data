@@ -45,7 +45,6 @@ int main(){
     {
         addChild('G', node);
     }
-    
     node = findsimpul('D', T.root);
     if (node != NULL)
     {
@@ -62,50 +61,18 @@ int main(){
         addChild('M', node);
     }
     
-    // printf("===============\n");
-    // printf("preOrder\n");
-    // printTreePreOrder(T.root);
-    // printf("\n===============\n");
-    // printf("postOrder\n");
-    // printTreePostOrder(T.root);
-    // printf("\n===============\n");
+    delChild('C', T.root);
+    printTreePreOrder(node);
+    printf("===============\n");
+    printf("preOrder\n");
+    printTreePreOrder(T.root);
+    printf("\n===============\n");
+    printf("postOrder\n");
+    printTreePostOrder(T.root);
+    printf("\n===============\n");
 
     // tree T2;
-    // // copyTree(T.root, &T2.root);
-    // makeTree('A', &T2);
-    // addChild('B', T2.root);
-    // addChild('C', T2.root);
-    // addChild('D', T2.root);
-
-    // node = findsimpul('B', T2.root);
-    // if (node != NULL)
-    // {
-    //     addChild('E', node);
-    //     addChild('F', node);
-    // }
-    
-    // node = findsimpul('C', T2.root);
-    // if (node != NULL)
-    // {
-    //     addChild('G', node);
-    // }
-    
-    // node = findsimpul('D', T2.root);
-    // if (node != NULL)
-    // {
-    //     addChild('H', node);
-    //     addChild('I', node);
-    //     addChild('J', node);
-    // }
-    
-    // node = findsimpul('J', T2.root);
-    // if (node != NULL)
-    // {
-    //     addChild('K', node);
-    //     addChild('L', node);
-    //     addChild('M', node);
-    //     addChild('Z', node);
-    // }
+    // copyTree(T.root, &T2.root);
     // printf("===============\n");
     // printf("preOrder\n");
     // printTreePreOrder(T2.root);
@@ -113,38 +80,14 @@ int main(){
     // printf("postOrder\n");
     // printTreePostOrder(T2.root);
     // printf("\n===============\n");
-    // if (isEqual(T.root, T2.root) == 1)
-    // {
-    //     printf("pohon sama\n");
-    // }else
-    // {
-    //     printf("pohon tidak sama\n");
-    // }
-    
-    // node = findsimpul('J', T.root);
-    // if (node != NULL)
-    // {
-    //     delChild('K', node);
-    //     delChild('L', node);
-    //     delChild('M', node);
-    // }
 
-    // node = findsimpul('J', T.root);
-    // if (node != NULL)
-    // {
-    //     // addChild('K', node);
-    //     // addChild('L', node);
-    //     delChild('M', node);
-    // }
-
-    delAll(T.root);
-    printf("===============\n");
-    printf("preOrder setelah dihapus\n");
-    printTreePreOrder(T.root);
-    printf("\n===============\n");
-    printf("postOrder setelah dihapus\n");
-    printTreePostOrder(T.root);
-    printf("\n===============\n");
+    // printf("===============\n");
+    // printf("preOrder setelah dihapus\n");
+    // printTreePreOrder(T.root);
+    // printf("\n===============\n");
+    // printf("postOrder setelah dihapus\n");
+    // printTreePostOrder(T.root);
+    // printf("\n===============\n");
     // node = findsimpul('L', T.root);
     // printf("%c\n", node->sibling->container);
 
@@ -292,7 +235,7 @@ void delChild(char c, simpul *root){
                         }
                     }else
                     {
-                        if (prev == root->child && last->sibling == root->child)
+                        if (prev == root->child && last == delete)
                         {   /* jika hanya ada dua simpul
                             anak dan yang dihapus adalah simpul
                             anak kedua */
@@ -431,20 +374,8 @@ void copyTree(simpul *root1, simpul **root2){
     {
         (*root2) = (simpul *) malloc (sizeof (simpul));
         (*root2)->container = root1->container;
-        if (root1->sibling != NULL)
-        {
-            (*root2)->sibling = root1->sibling;
-        }else
-        {
-            (*root2)->sibling = NULL;
-        }
-        if (root1->child != NULL)
-        {
-            (*root2)->child = root1->child;
-        }else
-        {
-            (*root2)->child = NULL;
-        }
+        (*root2)->child = NULL;
+        (*root2)->sibling = NULL;
 
         if (root1->child != NULL)
         {
