@@ -1,126 +1,4 @@
-/* Graph */
-
-#include <stdio.h>
-#include <malloc.h>
-
-typedef struct nd *nodeAddress;
-typedef struct pth *pathAddress;
-
-typedef struct nd
-{
-    char container;
-    nodeAddress next;
-    pathAddress arc;
-}node;
-
-typedef struct pth
-{
-    int pathContainer;
-    pathAddress nextPath;
-    node *destination;
-}path;
-
-typedef struct
-{
-    node* first;
-}graph;
-
-void createEmpty(graph *G);
-void addNode(char c, graph *G);
-void addPath(node *first, node *dest, int weight);
-node* findNode(char c, graph G);
-void delPath(char cDest, node *first);
-void delAll(node *first);
-void delNode(char c, graph *G);
-void printGraph(graph G);
-
-int main(int argc, char const *argv[])
-{
-    graph G;
-    createEmpty(&G);
-    addNode('A', &G);
-    addNode('B', &G);
-    addNode('C', &G);
-    addNode('D', &G);
-    addNode('E', &G);
-    addNode('F', &G);
-
-    node *begin = findNode('A', G);
-    node *end = findNode('B', G);    
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 3);
-    }
-
-    begin = findNode('B', G);
-    end = findNode('D', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 3);
-    }
-
-    end = findNode('E', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 7);
-    }
-
-    begin = findNode('C', G);
-    end = findNode('A', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 3);
-    }
-
-    begin = findNode('D', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 8);
-    }
-
-    end = findNode('C', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 3);
-    }
-
-    begin = findNode('E', G);
-    end = findNode('D', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 4);
-    }
-
-    end = findNode('F', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 4);
-    }
-
-    begin = findNode('F', G);
-    end = findNode('D', G);
-    if (begin != NULL && end != NULL)
-    {
-        addPath(begin, end, 2);
-    }
-
-    printf("=================\n");
-    printGraph(G);
-    printf("\n=================\n");
-
-    begin = findNode('A', G);
-    if (begin != NULL)
-    {
-        delPath('B', begin);
-    }
-    
-    printf("=================\n");
-    printf("setelah dihapus\n");
-    printGraph(G);
-    printf("\n=================\n");
-
-    return 0;
-}
+#include "header.h"
 
 void createEmpty(graph *G)
 {
@@ -139,7 +17,7 @@ void addNode(char c, graph *G)
         (*G).first = new;
     }else
     {   /* jika graf tidak kosong
-        maka akan menambahkan simpul
+        maka akan menambahkan node
         baru pada akhir graph */
         node *last = (*G).first;
         while (last->next != NULL)
@@ -205,7 +83,7 @@ void delPath(char cDest, node *first)
         while (delete != NULL && found == 0)
         {
             if (delete->destination->container == cDest)
-            {
+            {   // jika ketemu
                 found = 1;
             }else
             {
@@ -214,7 +92,7 @@ void delPath(char cDest, node *first)
             }
         }
         if (found == 1)
-        {
+        {   // jika ketemu
             if (prev == NULL)
             {
                 first->arc = delete->nextPath;
@@ -231,13 +109,7 @@ void delPath(char cDest, node *first)
                 }
             }
             free(delete);
-        }else
-        {
-            printf("tidak ada jalur dengan simpul tujuan\n");
         }
-    }else
-    {
-        printf("tidak ada jalur dengan simpul tujuan\n");
     }
 }
 
@@ -311,13 +183,7 @@ void delNode(char c, graph *G)
                 }
                 free(delete);
             }
-        }else
-        {
-            printf("tidak ada simpul dengan info karakter masukan\n");
         }
-    }else
-    {
-        printf("tidak ada simpul dengan info karakter masukan\n");
     }
 }
 
@@ -329,11 +195,11 @@ void printGraph(graph G)
     {
         while (ptr != NULL)
         {
-            printf("simpul : %c\n", ptr->container);
+            printf("Node %c\n", ptr->container);
             path *ptrPath = ptr->arc;
             while (ptrPath != NULL)
             {
-                printf(" - ada jalur ke simpul : %c dengan beban : %d\n", ptrPath->destination->container, ptrPath->pathContainer);
+                printf("Jalur %c ke %c\n", ptr->container, ptrPath->destination->container);
                 ptrPath = ptrPath->nextPath;
             }
             ptr = ptr->next;
