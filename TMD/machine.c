@@ -1,3 +1,12 @@
+/*
+   ============================================================
+   | Saya Ghifari Octaverin 2000952 mengerjakan TMD           |
+   | dalam mata kuliah Struktur Data                          |
+   | untuk keberkahanNya maka saya tidak melakukan kecurangan |
+   | seperti yang telah dispesifikasikan. Aamiin              |
+   ============================================================
+*/
+
 #include "header.h"
 
 void makeTree(char location[], int infectedCase, tree *T)
@@ -31,25 +40,63 @@ void addChild(char location[], int infectedCase, simpul *root)
             {   /* jika simpul root memiliki
                 anak yang belum memiliki saudara, maka
                 simpul baru menjadi anak kedua */
-                new->sibling = root->child;
-                root->child->sibling = new;
-            }else
-            {
-                simpul *last  = root->child;
-                /* mencari simpul anak terakhir
-                karena akan dikaitkan dengan simpul
-                baru sebagai simpul anak terakhir yang
-                baru, simpul anak terakhir adalah yang
-                memiliki sibling simpul anak pertama,
-                maka selama belum samapi pada simpul
-                anak terakhir, penunjuk last akan
-                berjalan ke simpul anak berikutnya */
-                while (last->sibling != root->child)
-                {
-                    last = last->sibling;
+                if (root->child->container.infectedCase < new->container.infectedCase)
+                {   /* jika jumlah kasus anak pertama lebih kecil
+                    daripada kasus simpul baru */
+                    simpul *temp = root->child;
+                    temp->sibling = new;
+                    new->sibling = temp;
+                    root->child = new;
+                }else
+                {   // jika kasus simpul baru lebih kecil daripada anak pertama
+                    new->sibling = root->child;
+                    root->child->sibling = new;
                 }
-                new->sibling = root->child;
-                last->sibling = new;
+            }else
+            {   // jika memiliki banyak anak
+                simpul *ptr  = root->child;
+                int found = 0;
+                while (ptr->sibling != root->child && found != 1)
+                {   // mencari anak yang memiliki nilai kasus lebih kecil daripada simpul baru
+                    if (ptr->container.infectedCase < new->container.infectedCase)
+                    {   // jika jumlah kasus simpul ptr lebih kecil daripada simpul baru
+                        found = 1;
+                    }else
+                    {   // jika tidak
+                        ptr = ptr->sibling;
+                    }
+                }
+                if (found == 0)
+                {   // jika tidak ditemukan simpul yang lebih kecil daripada simpul baru
+                    if (ptr->container.infectedCase < new->container.infectedCase)
+                    {   // jika simpul ptr lebih kecil daripada simpul baru
+                        root->child->sibling = new;
+                        new->sibling = ptr;
+                        ptr->sibling = root->child;
+                    }else
+                    {   // jika tidak
+                        new->sibling = root->child;
+                        ptr->sibling = new;
+                    }
+                }else
+                {   // jika ditemukan simpul yang lebih kecil daripada simpul baru
+                    if (ptr == root->child)
+                    {   // jika simpul tersebut merupakan anak pertama
+                        simpul *temp = root->child;
+                        while (temp->sibling != root->child)
+                        {
+                            temp = temp->sibling;
+                        }
+                        root->child = new;
+                        new->sibling = ptr;
+                        temp->sibling = root->child;
+                        
+                    }else
+                    {   // jika simpul tersebut bukan anak pertama
+                        new->sibling = ptr->sibling;
+                        ptr->sibling = new;
+                    }
+                }
             }
         }
     }
@@ -59,7 +106,7 @@ simpul* findSimpul(char location[], simpul *root)
 {
     simpul *result = NULL;
     if (root != NULL)
-    {
+    {   // jika simpul root tidak kosong
         if (strcmp(root->container.locationName, location) == 0)
         {
             result = root;
@@ -116,8 +163,17 @@ simpul* findSimpul(char location[], simpul *root)
 }
 
 int lenLib(int infectedCase)
-{
-    if (infectedCase >= 10000)
+{   // library panjang kasus
+    if (infectedCase >= 10000000)
+    {
+        return 8;
+    }else if (infectedCase >= 1000000)
+    {
+        return 7;
+    }else if (infectedCase >= 100000)
+    {
+        return 6;
+    }else if (infectedCase >= 10000)
     {
         return 5;
     }else if (infectedCase >= 1000)
@@ -135,150 +191,178 @@ int lenLib(int infectedCase)
     }
 }
 
-void printTreePreOrder(simpul *root, int space)
+void printTreePreOrder(simpul *root, int currentSpace, int maxSpace[], int currentLevel)
 {
     if (root != NULL)
-    {
-        if (space != 0)
-        {
-            for (int i = 0; i < space; i++)
+    {   // jika simpul root tidak kosong
+        printf("\n");
+        if (currentSpace != 0)
+        {   // jika banyak spasi bukan 0
+            for (int i = 0; i < currentSpace; i++)
             {
                 printf(" ");
             }
         }
-        printf("|%s - %d - %d\n", root->container.locationName, root->container.infectedCase, space);
-        
-        //printf("%d", space);
-        simpul *ptr = root->child;
-        space += maxSpacePerLevel(root);
-        if (ptr != NULL)
-        {
-            //space += strlen(root->container.locationName) + 4 + lenLib(root->container.infectedCase);
-            if (ptr->sibling == NULL)
-            {   // jika memiliki satu simpul anak
-                //space += strlen(root->container.locationName) + 4 + lenLib(root->container.infectedCase);
-                printTreePreOrder(ptr, space);
-            }else
-            {   // jika memiliki banyak simpul anak
-                //space += strlen(root->container.locationName) + 4 + lenLib(root->container.infectedCase);
-                while (ptr->sibling != root->child)
-                {
-                    printTreePreOrder(ptr, space);
-                    ptr = ptr->sibling;
-                }
-                /* memproses simpul anak terakhir
-                karena belum terproses dalam perulangan */
-                printTreePreOrder(ptr, space);
-            }
-        }
-    }
-}
 
-int maxSpacePerLevel(simpul *root)
-{
-    int maxSpace = 0;
-    if (root != NULL)
-    {
-        simpul *ptr = root;
-        if (ptr->sibling != NULL)
-        {
-            while (ptr->sibling != root)
-            {
-                if (maxSpace < strlen(ptr->container.locationName) + 4 + lenLib(ptr->container.infectedCase))
-                {
-                    maxSpace = strlen(ptr->container.locationName) + 4 + lenLib(ptr->container.infectedCase);
-                }
-                // printf("%s", root->container.locationName);
-                ptr = ptr->sibling;
-            }
-        }
-        if (maxSpace < strlen(ptr->container.locationName) + 4 + lenLib(ptr->container.infectedCase))
-        {
-            maxSpace = strlen(ptr->container.locationName) + 4 + lenLib(ptr->container.infectedCase);
-        }
-    }
-    return maxSpace;
-}
+        printf("|%s - %d\n", root->container.locationName, root->container.infectedCase);
 
-void calculatinginfectedCases(simpul *root, int infectedCase)
-{
-    if (root != NULL)
-    {
+        currentSpace += maxSpace[currentLevel]; // akses panjang string maksimal disetiap level dan dijumlahkan dengan currentSpace
+        currentLevel++;
         simpul *ptr = root->child;
         if (ptr != NULL)
         {
             if (ptr->sibling == NULL)
             {   // jika memiliki satu simpul anak
-                calculatinginfectedCases(ptr, infectedCase);
-                //infectedCase += ptr->container.infectedCase;
+                printTreePreOrder(ptr, currentSpace, maxSpace, currentLevel);
             }else
             {   // jika memiliki banyak simpul anak
-                // mencetak simpul anak
                 while (ptr->sibling != root->child)
                 {
-                    calculatinginfectedCases(ptr, ptr->container.infectedCase);
-                    infectedCase += ptr->container.infectedCase;
+                    printTreePreOrder(ptr, currentSpace, maxSpace, currentLevel);
                     ptr = ptr->sibling;
                 }
                 /* memproses simpul anak terakhir
                 karena belum terproses dalam perulangan */
-                calculatinginfectedCases(ptr, ptr->container.infectedCase);
-                //infectedCase += ptr->container.infectedCase;
+                printTreePreOrder(ptr, currentSpace, maxSpace, currentLevel);
             }
-            infectedCase += ptr->container.infectedCase;
         }
-        root->container.infectedCase = infectedCase;
     }
 }
 
-void sortingNode(simpul *root)
+int spacePerLevel(simpul *root, int currentLevel, int targetLevel)
 {
+    int space = 0;
     if (root != NULL)
-    {
-        simpul *ptr = root->child;
-        if (ptr != NULL)
-        {
-            if (ptr->sibling == NULL)
-            {   // jika memiliki satu simpul anak
-                sortingNode(ptr);
-            }else
-            {   // jika memiliki banyak simpul anak
-                while (ptr->sibling != root->child)
-                {
-                    if (ptr->container.infectedCase < ptr->sibling->container.infectedCase)
-                    {
-                        swapNode(ptr, ptr->sibling, root);
-                    }
-                    sortingNode(ptr);
-                    ptr = ptr->sibling;
-                }
-                /* memproses simpul anak terakhir
-                karena belum terproses dalam perulangan */
-                sortingNode(ptr);
+    {   // jika simpul root tidak kosong
+        if (currentLevel == targetLevel)
+        {   // jika level saat ini sama dengan target
+            if (space < strlen(root->container.locationName) + 4 + lenLib(root->container.infectedCase))
+            {   // jika space lebih kecil daripada panjang string total
+                space = strlen(root->container.locationName) + 4 + lenLib(root->container.infectedCase);
             }
-        }
-    }
-}
-
-void swapNode(simpul *root1, simpul *root2, simpul *parent)
-{
-    simpul *ptr1 = parent->child;
-    simpul *prev1 = NULL;
-    int found = 0;
-    while (found == 1)
-    {
-        if (ptr1->sibling != parent->child && ptr1 == root1)
-        {
-            prev1 = ptr1;
-            ptr1 = ptr1->sibling;
-            found == 1;
         }else
         {
-            if (ptr1 == root1)
-            {
-                found == 1;
+            currentLevel++;
+            simpul *ptr = root->child;
+            if (ptr != NULL)
+            {   // jika simpul root mempunyai anak
+                if (ptr->sibling == NULL)
+                {   // jika memiliki satu simpul anak
+                    if (space < spacePerLevel(ptr, currentLevel, targetLevel))
+                    {
+                        space = spacePerLevel(ptr, currentLevel, targetLevel);
+                    }
+                }else
+                {   // jika memiliki banyak simpul anak
+                    while (ptr->sibling != root->child)
+                    {
+                        if (space < spacePerLevel(ptr, currentLevel, targetLevel))
+                        {
+                            space = spacePerLevel(ptr, currentLevel, targetLevel);
+                        }
+                        ptr = ptr->sibling;
+                    }
+                    /* memproses simpul anak terakhir
+                    karena belum terproses dalam perulangan */
+                    if (space < spacePerLevel(ptr, currentLevel, targetLevel))
+                    {
+                        space = spacePerLevel(ptr, currentLevel, targetLevel);
+                    }
+                }
             }
         }
     }
-    
+    return space;
+}
+
+int deepestLevelOfTree(simpul *root, int currentLevel)
+{
+    int deepestLevel = 0;
+    if (root != NULL)
+    {   // jika simpul root tidak kosong
+        deepestLevel = currentLevel;
+        currentLevel++;
+        simpul *ptr = root->child;
+        if (ptr != NULL)
+        {   // jika simpul root mempunyai anak
+            if (ptr->sibling == NULL)
+            {   // jika memiliki satu simpul anak
+                if (deepestLevel < deepestLevelOfTree(ptr, currentLevel))
+                {
+                    deepestLevel = deepestLevelOfTree(ptr, currentLevel);
+                }
+            }else
+            {   // jika memiliki banyak simpul anak
+                while (ptr->sibling != root->child)
+                {
+                    if (deepestLevel < deepestLevelOfTree(ptr, currentLevel))
+                    {
+                        deepestLevel = deepestLevelOfTree(ptr, currentLevel);
+                    }
+                    ptr = ptr->sibling;
+                }
+                /* memproses simpul anak terakhir
+                karena belum terproses dalam perulangan */
+                if (deepestLevel < deepestLevelOfTree(ptr, currentLevel))
+                {
+                    deepestLevel = deepestLevelOfTree(ptr, currentLevel);
+                }
+            }
+        }
+    }
+    return deepestLevel;
+}
+
+int calculatingInfectedCases(simpul *root)
+{
+    int infectedCase = 0;
+    if (root != NULL)
+    {   // jika simpul root tidak kosong
+        infectedCase = root->container.infectedCase;
+        simpul *ptr = root->child;
+        if (ptr != NULL)
+        {   // jika simpul root mempunyai anak
+            if (ptr->sibling == NULL)
+            {   // jika memiliki satu simpul anak
+                infectedCase += calculatingInfectedCases(ptr);
+            }else
+            {   // jika memiliki banyak simpul anak
+                while (ptr->sibling != root->child)
+                {
+                    infectedCase += calculatingInfectedCases(ptr);
+                    ptr = ptr->sibling;
+                }
+                /* memproses simpul anak terakhir
+                karena belum terproses dalam perulangan */
+                infectedCase += calculatingInfectedCases(ptr);
+            }
+        }
+    }
+    return infectedCase;
+}
+
+void calculate(simpul *root)
+{
+    if (root != NULL)
+    {   // jika simpul root tidak kosong
+        root->container.infectedCase = calculatingInfectedCases(root);  // menghitung jumlah kasus anaknya
+        simpul *ptr = root->child;
+        if (ptr != NULL)
+        {   // jika root mempunyai anak
+            if (ptr->sibling == NULL)
+            {   // jika memiliki satu simpul anak
+                calculate(ptr);
+            }else
+            {   // jika memiliki banyak simpul anak
+                while (ptr->sibling != root->child)
+                {
+                    calculate(ptr);
+                    ptr = ptr->sibling;
+                }
+                /* memproses simpul anak terakhir
+                karena belum terproses dalam perulangan */
+                calculate(ptr);
+            }
+        }
+    }
 }
