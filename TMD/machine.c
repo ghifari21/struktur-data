@@ -55,6 +55,7 @@ void addChild(char location[], int infectedCase, simpul *root)
             }else
             {   // jika memiliki banyak anak
                 simpul *ptr  = root->child;
+                simpul *prev = NULL;
                 int found = 0;
                 while (ptr->sibling != root->child && found != 1)
                 {   // mencari anak yang memiliki nilai kasus lebih kecil daripada simpul baru
@@ -63,6 +64,7 @@ void addChild(char location[], int infectedCase, simpul *root)
                         found = 1;
                     }else
                     {   // jika tidak
+                        prev = ptr;
                         ptr = ptr->sibling;
                     }
                 }
@@ -70,7 +72,7 @@ void addChild(char location[], int infectedCase, simpul *root)
                 {   // jika tidak ditemukan simpul yang lebih kecil daripada simpul baru
                     if (ptr->container.infectedCase < new->container.infectedCase)
                     {   // jika simpul ptr lebih kecil daripada simpul baru
-                        root->child->sibling = new;
+                        prev->sibling = new;
                         new->sibling = ptr;
                         ptr->sibling = root->child;
                     }else
@@ -90,11 +92,10 @@ void addChild(char location[], int infectedCase, simpul *root)
                         root->child = new;
                         new->sibling = ptr;
                         temp->sibling = root->child;
-                        
                     }else
                     {   // jika simpul tersebut bukan anak pertama
-                        new->sibling = ptr->sibling;
-                        ptr->sibling = new;
+                        prev->sibling = new;
+                        new->sibling = ptr;
                     }
                 }
             }
